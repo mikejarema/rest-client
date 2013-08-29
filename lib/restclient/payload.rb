@@ -201,12 +201,10 @@ module RestClient
           s.write(" filename=\"#{v.respond_to?(:original_filename) ? v.original_filename : File.basename(v.path)}\"#{EOL}")
           s.write("Content-Type: #{v.respond_to?(:content_type) ? v.content_type : mime_for(v.path)}#{EOL}")
           s.write(EOL)
-          if v.is_a?(File)
-            while data = v.read(8124)
-              s.write(data)
-            end
+          if v.class.to_s == 'CarrierWave::SanitizedFile'
+            s.write(v.read)
           else
-            while data = v.read
+            while data = v.read(8124)
               s.write(data)
             end
           end
