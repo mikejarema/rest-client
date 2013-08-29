@@ -201,8 +201,14 @@ module RestClient
           s.write(" filename=\"#{v.respond_to?(:original_filename) ? v.original_filename : File.basename(v.path)}\"#{EOL}")
           s.write("Content-Type: #{v.respond_to?(:content_type) ? v.content_type : mime_for(v.path)}#{EOL}")
           s.write(EOL)
-          while data = v.read(8124)
-            s.write(data)
+          if v.is_a?(File)
+            while data = v.read(8124)
+              s.write(data)
+            end
+          else
+            while data = v.read
+              s.write(data)
+            end
           end
         ensure
           v.close if v.respond_to?(:close)
